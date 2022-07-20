@@ -10,6 +10,8 @@
 		FDE7205C2888841E008D9ADC /* TinyCart.docc in Sources */ = {isa = PBXBuildFile; fileRef = FDE7205B2888841E008D9ADC /* TinyCart.docc */; };
 		FDE7205D2888841E008D9ADC /* TinyCart.h in Headers */ = {isa = PBXBuildFile; fileRef = FDE7205A2888841E008D9ADC /* TinyCart.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDE7206528888521008D9ADC /* Exceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE7206428888521008D9ADC /* Exceptions.swift */; };
+		FDE7206728888662008D9ADC /* ItemProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE7206628888662008D9ADC /* ItemProtocol.swift */; };
+		FDE72069288886AE008D9ADC /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDE72068288886AE008D9ADC /* Cart.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,6 +19,8 @@
 		FDE7205A2888841E008D9ADC /* TinyCart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinyCart.h; sourceTree = "<group>"; };
 		FDE7205B2888841E008D9ADC /* TinyCart.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TinyCart.docc; sourceTree = "<group>"; };
 		FDE7206428888521008D9ADC /* Exceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exceptions.swift; sourceTree = "<group>"; };
+		FDE7206628888662008D9ADC /* ItemProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProtocol.swift; sourceTree = "<group>"; };
+		FDE72068288886AE008D9ADC /* Cart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +56,8 @@
 				FDE7205A2888841E008D9ADC /* TinyCart.h */,
 				FDE7205B2888841E008D9ADC /* TinyCart.docc */,
 				FDE7206428888521008D9ADC /* Exceptions.swift */,
+				FDE7206628888662008D9ADC /* ItemProtocol.swift */,
+				FDE72068288886AE008D9ADC /* Cart.swift */,
 			);
 			path = TinyCart;
 			sourceTree = "<group>";
@@ -137,6 +143,8 @@
 			files = (
 				FDE7205C2888841E008D9ADC /* TinyCart.docc in Sources */,
 				FDE7206528888521008D9ADC /* Exceptions.swift in Sources */,
+				FDE7206728888662008D9ADC /* ItemProtocol.swift in Sources */,
+				FDE72069288886AE008D9ADC /* Cart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

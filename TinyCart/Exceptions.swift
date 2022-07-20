@@ -9,17 +9,17 @@ import Foundation
 
 
 enum TinyCartException: Error {
-    case invalidQuantity
-    case itemNotFound
+    case invalidQuantity(message: String = "The entered quantity is not valid")
+    case itemNotFound(message: String = "Item not found inside the cart")
 }
 
 extension TinyCartException: LocalizedError {
     public var errorDescription: String? {
         switch(self) {
-        case .invalidQuantity:
-            return NSLocalizedString("The entered quantity is not valid", comment: "Invalid Quantity")
-        case .itemNotFound:
-            return NSLocalizedString("Item not found inside the cart", comment: "Invalid Item")
+        case .invalidQuantity(let message):
+            return NSLocalizedString(message, comment: "Invalid Quantity")
+        case .itemNotFound(let message):
+            return NSLocalizedString(message, comment: "Invalid Item")
         }
     }
 }
