@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum TinyCartException: Error {
+public enum TinyCartException: Error {
     case invalidQuantity(message: String = "The entered quantity is not valid")
     case itemNotFound(message: String = "Item not found inside the cart")
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Cart {
+public class Cart {
     private var cartItems: [AnyHashable: Int] = [:]
     
     public static let shared = Cart()

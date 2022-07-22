@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ItemProtocol: Hashable, AnyObject {
+public protocol ItemProtocol: Hashable, AnyObject {
     var name: String {get set}
     var price: Double {get set}
 }

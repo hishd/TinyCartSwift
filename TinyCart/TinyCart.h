@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+//#import <TinyCart/Cart.Swift>
 
 //! Project version number for TinyCart.
 FOUNDATION_EXPORT double TinyCartVersionNumber;
@@ -14,5 +15,3 @@ FOUNDATION_EXPORT double TinyCartVersionNumber;
 FOUNDATION_EXPORT const unsigned char TinyCartVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <TinyCart/PublicHeader.h>
-
-
