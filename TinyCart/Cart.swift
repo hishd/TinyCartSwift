@@ -98,6 +98,12 @@ public class Cart {
         return cartItems
     }
     
+    public func getItemCount() -> Int {
+        return cartItems.reduce(0) { partialResult, item in
+            partialResult + item.value
+        }
+    }
+    
     public func toString() -> String {
         var itemsInformation = ""
         cartItems.forEach { item in
