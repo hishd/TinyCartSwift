@@ -7,16 +7,11 @@
 
 import Foundation
 
-//public protocol ItemProtocol: Hashable {
-//    var name: String {get set}
-//    var price: Double {get set}
-//}
-
 open class TinyCartItem: Hashable {
     open var name: String
     open var price: Double
     
-    public init(name: String, price: Double) {
+    public required init(name: String, price: Double) {
         self.name = name
         self.price = price
     }
