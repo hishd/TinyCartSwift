@@ -32,6 +32,22 @@ public class Cart {
         }
     }
     
+    public func setQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
+        try queue.sync {
+            guard self.cartItems[item] != nil else {
+                throw TinyCartException.itemNotFound()
+            }
+            
+            if qty == 0 {
+                self.cartItems.removeValue(forKey: item)
+                return
+            }
+            
+            cartItems[item] = qty
+            NSLog("Item quantity updated in cart")
+        }
+    }
+    
     public func updateQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
@@ -121,7 +137,7 @@ public class Cart {
         }
     }
     
-    public func getItemsWithQuantity<T: ItemProtocol>() -> [T: Int] {
+    public func getItemsWithQuantity<T: ItemProtocol>(type: T.Type) -> [T: Int] {
         queue.sync {
             var items: [T: Int] = [:]
             cartItems.forEach { item in
