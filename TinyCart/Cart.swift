@@ -14,15 +14,21 @@ public class Cart {
     
     private init() {}
     
+    private let queue = DispatchQueue(label: "TinyCartQueue", qos: .userInitiated)
+    
     public func addItem<T>(item: T, qty: Int) throws where T: ItemProtocol {
         if qty <= 0 {
             throw TinyCartException.invalidQuantity()
         }
         
-        if let itemQty = cartItems[item] {
-            cartItems[item] = itemQty + qty
-        } else {
-            cartItems[item] = qty
+        queue.async {
+            if let itemQty = self.cartItems[item] {
+                self.cartItems[item] = itemQty + qty
+                NSLog("Item quantity updated in cart")
+            } else {
+                self.cartItems[item] = qty
+                NSLog("Item added to cart")
+            }
         }
     }
     
@@ -30,12 +36,15 @@ public class Cart {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
         }
-        
-        guard let itemQty = cartItems[item] else {
-            throw TinyCartException.itemNotFound()
+
+        try queue.sync {
+            guard let itemQty = self.cartItems[item] else {
+                throw TinyCartException.itemNotFound()
+            }
+            
+            self.cartItems[item] = itemQty + qty
+            NSLog("Item quantity updated in cart")
         }
-        
-        cartItems[item] = itemQty + qty
     }
     
     public func removeQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
@@ -43,78 +52,106 @@ public class Cart {
             throw TinyCartException.invalidQuantity()
         }
         
-        guard let itemQty = cartItems[item] else {
-            throw TinyCartException.itemNotFound()
-        }
-        
-        if qty > itemQty {
-            throw TinyCartException.invalidQuantity(message: "Invalid item quantity, the quantity should be greter than the exisiting quantity")
-        }
-        
-        if qty == itemQty {
-            cartItems.removeValue(forKey: item)
-        } else {
-            cartItems[itemQty] = itemQty - qty
+        try queue.sync {
+            guard let itemQty = self.cartItems[item] else {
+                throw TinyCartException.itemNotFound()
+            }
+            
+            if qty > itemQty {
+                throw TinyCartException.invalidQuantity(message: "Invalid item quantity, the quantity should be greter than the exisiting quantity")
+            }
+            
+            if qty == itemQty {
+                self.cartItems.removeValue(forKey: item)
+                NSLog("Removed item from cart")
+            } else {
+                self.cartItems[itemQty] = itemQty - qty
+                NSLog("Removed item quantity from cart")
+            }
         }
     }
     
     public func removeItem<T>(item: T) throws where T: ItemProtocol {
-        guard cartItems[item] != nil else {
-            throw TinyCartException.itemNotFound()
+        try queue.sync {
+            guard self.cartItems[item] != nil else {
+                throw TinyCartException.itemNotFound()
+            }
+            
+            self.cartItems.removeValue(forKey: item)
+            NSLog("Removed item from cart")
         }
-        
-        cartItems.removeValue(forKey: item)
     }
     
     public func clearCart() {
-        cartItems.removeAll()
+        queue.sync {
+            self.cartItems.removeAll()
+            NSLog("Cleared all items on cart")
+        }
     }
     
     public func isEmpty() -> Bool {
-        return cartItems.isEmpty
+        queue.sync {
+            return self.cartItems.isEmpty
+        }
     }
     
     public func getItemQty<T>(item: T) throws -> Int where T: ItemProtocol {
-        guard let itemQty = cartItems[item] else {
-            throw TinyCartException.itemNotFound()
+        try queue.sync {
+            guard let itemQty = self.cartItems[item] else {
+                throw TinyCartException.itemNotFound()
+            }
+            
+            return itemQty
         }
-        
-        return itemQty
     }
     
     public func getTotalPrice() -> Double {
-        return cartItems.reduce(0.0) { partialResult, item in
-            partialResult + (Double(item.value) * ((item.key as? ItemProtocol)?.price ?? 0.0))
+        queue.sync {
+            return self.cartItems.reduce(0.0) { partialResult, item in
+                partialResult + (Double(item.value) * ((item.key as? ItemProtocol)?.price ?? 0.0))
+            }
         }
     }
     
     public func getItemNames() -> [String] {
-        return cartItems.map { item in
-            (item.key as? ItemProtocol)?.name ?? ""
+        queue.sync {
+            return self.cartItems.map { item in
+                (item.key as? ItemProtocol)?.name ?? ""
+            }
         }
     }
     
-    public func getItemsWithQuantity() -> [AnyHashable: Int] {
-        return cartItems
+    public func getItemsWithQuantity<T: ItemProtocol>() -> [T: Int] {
+        queue.sync {
+            var items: [T: Int] = [:]
+            cartItems.forEach { item in
+                items[item.key as! T] = item.value
+            }
+            return items
+        }
     }
     
     public func getItemCount() -> Int {
-        return cartItems.reduce(0) { partialResult, item in
-            partialResult + item.value
+        queue.sync {
+            return self.cartItems.reduce(0) { partialResult, item in
+                partialResult + item.value
+            }
         }
     }
     
     public func toString() -> String {
-        var itemsInformation = ""
-        cartItems.forEach { item in
-            itemsInformation
-                .append(contentsOf:String(format: "Item Name : %@, Price : %.2f, Quantity : %d",
-                                          (item.key as? ItemProtocol)?.name ?? "",
-                                          (item.key as? ItemProtocol)?.price ?? 0.0,
-                                          item.value)
-                )
+        queue.sync {
+            var itemsInformation = ""
+            self.cartItems.forEach { item in
+                itemsInformation
+                    .append(contentsOf:String(format: "Item Name : %@, Price : %.2f, Quantity : %d",
+                                              (item.key as? ItemProtocol)?.name ?? "",
+                                              (item.key as? ItemProtocol)?.price ?? 0.0,
+                                              item.value)
+                    )
+            }
+            return itemsInformation
         }
-        return itemsInformation
     }
     
 }
