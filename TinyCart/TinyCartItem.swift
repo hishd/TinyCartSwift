@@ -12,7 +12,7 @@ import Foundation
 //    var price: Double {get set}
 //}
 
-open class BaseCartItem: Hashable {
+open class TinyCartItem: Hashable {
     open var name: String
     open var price: Double
     
@@ -21,7 +21,7 @@ open class BaseCartItem: Hashable {
         self.price = price
     }
     
-    public static func == (lhs: BaseCartItem, rhs: BaseCartItem) -> Bool {
+    public static func == (lhs: TinyCartItem, rhs: TinyCartItem) -> Bool {
         return lhs.name == rhs.name
     }
     

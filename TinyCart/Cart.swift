@@ -8,7 +8,7 @@
 import Foundation
 
 public class Cart {
-    private var cartItems: [BaseCartItem: Int] = [:]
+    private var cartItems: [TinyCartItem: Int] = [:]
     
     public static let shared = Cart()
     
@@ -16,7 +16,7 @@ public class Cart {
     
     private let queue = DispatchQueue(label: "TinyCartQueue", qos: .userInitiated)
     
-    public func addItem<T>(item: T, qty: Int) throws where T: BaseCartItem {
+    public func addItem<T>(item: T, qty: Int) throws where T: TinyCartItem {
         if qty <= 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -32,7 +32,7 @@ public class Cart {
         }
     }
     
-    public func setQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
+    public func setQuantity<T>(item: T, qty: Int) throws where T: TinyCartItem {
         try queue.sync {
             if cartItems[item] == nil {
                 throw TinyCartException.itemNotFound()
@@ -48,7 +48,7 @@ public class Cart {
         }
     }
     
-    public func updateQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
+    public func updateQuantity<T>(item: T, qty: Int) throws where T: TinyCartItem {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -63,7 +63,7 @@ public class Cart {
         }
     }
     
-    public func removeQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
+    public func removeQuantity<T>(item: T, qty: Int) throws where T: TinyCartItem {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -87,7 +87,7 @@ public class Cart {
         }
     }
     
-    public func removeItem<T>(item: T) throws where T: BaseCartItem {
+    public func removeItem<T>(item: T) throws where T: TinyCartItem {
         try queue.sync {
             guard self.cartItems[item] != nil else {
                 throw TinyCartException.itemNotFound()
@@ -111,7 +111,7 @@ public class Cart {
         }
     }
     
-    public func getItemQty<T>(item: T) throws -> Int where T: BaseCartItem {
+    public func getItemQty<T>(item: T) throws -> Int where T: TinyCartItem {
         try queue.sync {
             guard let itemQty = self.cartItems[item] else {
                 throw TinyCartException.itemNotFound()
@@ -137,7 +137,7 @@ public class Cart {
         }
     }
     
-    public func getItemsWithQuantity<T: BaseCartItem>(type: T.Type) -> [T: Int] {
+    public func getItemsWithQuantity<T: TinyCartItem>(type: T.Type) -> [T: Int] {
         queue.sync {
             var items: [T: Int] = [:]
             cartItems.forEach { item in
