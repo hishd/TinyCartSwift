@@ -34,8 +34,6 @@ public class Cart {
     
     public func setQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
         try queue.sync {
-            print(item)
-            print(cartItems.first)
             if cartItems[item] == nil {
                 throw TinyCartException.itemNotFound()
             }
