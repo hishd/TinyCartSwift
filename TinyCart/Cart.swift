@@ -8,7 +8,7 @@
 import Foundation
 
 public class Cart {
-    private var cartItems: [AnyHashable: Int] = [:]
+    private var cartItems: [BaseCartItem: Int] = [:]
     
     public static let shared = Cart()
     
@@ -16,7 +16,7 @@ public class Cart {
     
     private let queue = DispatchQueue(label: "TinyCartQueue", qos: .userInitiated)
     
-    public func addItem<T>(item: T, qty: Int) throws where T: ItemProtocol {
+    public func addItem<T>(item: T, qty: Int) throws where T: BaseCartItem {
         if qty <= 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -32,7 +32,7 @@ public class Cart {
         }
     }
     
-    public func setQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
+    public func setQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
         try queue.sync {
             print(item)
             print(cartItems.first)
@@ -50,7 +50,7 @@ public class Cart {
         }
     }
     
-    public func updateQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
+    public func updateQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -65,7 +65,7 @@ public class Cart {
         }
     }
     
-    public func removeQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
+    public func removeQuantity<T>(item: T, qty: Int) throws where T: BaseCartItem {
         if qty == 0 {
             throw TinyCartException.invalidQuantity()
         }
@@ -83,13 +83,13 @@ public class Cart {
                 self.cartItems.removeValue(forKey: item)
                 NSLog("Removed item from cart")
             } else {
-                self.cartItems[itemQty] = itemQty - qty
+                self.cartItems[item] = itemQty - qty
                 NSLog("Removed item quantity from cart")
             }
         }
     }
     
-    public func removeItem<T>(item: T) throws where T: ItemProtocol {
+    public func removeItem<T>(item: T) throws where T: BaseCartItem {
         try queue.sync {
             guard self.cartItems[item] != nil else {
                 throw TinyCartException.itemNotFound()
@@ -113,7 +113,7 @@ public class Cart {
         }
     }
     
-    public func getItemQty<T>(item: T) throws -> Int where T: ItemProtocol {
+    public func getItemQty<T>(item: T) throws -> Int where T: BaseCartItem {
         try queue.sync {
             guard let itemQty = self.cartItems[item] else {
                 throw TinyCartException.itemNotFound()
@@ -126,7 +126,7 @@ public class Cart {
     public func getTotalPrice() -> Double {
         queue.sync {
             return self.cartItems.reduce(0.0) { partialResult, item in
-                partialResult + (Double(item.value) * ((item.key as? ItemProtocol)?.price ?? 0.0))
+                partialResult + (Double(item.value) * item.key.price)
             }
         }
     }
@@ -134,12 +134,12 @@ public class Cart {
     public func getItemNames() -> [String] {
         queue.sync {
             return self.cartItems.map { item in
-                (item.key as? ItemProtocol)?.name ?? ""
+                item.key.name
             }
         }
     }
     
-    public func getItemsWithQuantity<T: ItemProtocol>(type: T.Type) -> [T: Int] {
+    public func getItemsWithQuantity<T: BaseCartItem>(type: T.Type) -> [T: Int] {
         queue.sync {
             var items: [T: Int] = [:]
             cartItems.forEach { item in
@@ -163,8 +163,8 @@ public class Cart {
             self.cartItems.forEach { item in
                 itemsInformation
                     .append(contentsOf:String(format: "Item Name : %@, Price : %.2f, Quantity : %d",
-                                              (item.key as? ItemProtocol)?.name ?? "",
-                                              (item.key as? ItemProtocol)?.price ?? 0.0,
+                                              item.key.name,
+                                              item.key.price,
                                               item.value)
                     )
             }
