@@ -34,10 +34,12 @@ public class Cart {
     
     public func setQuantity<T>(item: T, qty: Int) throws where T: ItemProtocol {
         try queue.sync {
-            guard self.cartItems[item] != nil else {
+            print(item)
+            print(cartItems.first)
+            if cartItems[item] == nil {
                 throw TinyCartException.itemNotFound()
             }
-            
+                
             if qty == 0 {
                 self.cartItems.removeValue(forKey: item)
                 return
